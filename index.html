@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trouwerij Danny & Titisa</title>
+    <!-- CSS & JS -->
+    <link rel="stylesheet" href="https://unpkg.com/chota@latest">
+    <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer></script>
+</head>
+<body>
+    <nav class="nav">
+        <div class="nav-left">
+            <a class="brand" href="#">D&T</a>
+        </div>
+        <div class="nav-right">
+            <div class="tabs">
+                <a href="./index.html" class="active">Home</a>
+                <a href="./signup/index.html">Aanmelden</a>
+                <a href="./view/index.html">Bekijk aanmeldingen</a>
+            </div>
+        </div>
+    </nav>
+    <main role="main" class="container">
+        <h1>Danny & Titisa gaan trouwen!</h1>
+        <div x-data="countdown()" x-init="init()">
+            <p>Nog maar <span x-text="diff"></span> dagen!</p>
+        </div>
+        <a href="signup/">Laat weten of je komt!</a>
+    </main>
+
+    <script>
+        const _MS_PER_DAY = 1000 * 60 * 60 * 24;
+        const _WEDDING_DATE = new Date("8 sep 2021");
+
+        // a and b are javascript Date objects
+        function dateDiffInDays(a, b) {
+            // Discard the time and time-zone information.
+            const utc1 = Date.UTC(a.getFullYear(), a.getMonth(), a.getDate());
+            const utc2 = Date.UTC(b.getFullYear(), b.getMonth(), b.getDate());
+
+            return Math.floor((utc2 - utc1) / _MS_PER_DAY);
+        }
+
+        function countdown() {
+            return {
+                diff: 0,
+                init() { this.update() },
+                update() { this.diff = dateDiffInDays(new Date(), _WEDDING_DATE) },
+                isExpired() { return this.diff < 0 },
+            }
+        }
+    </script>
+</body>
+</html>
