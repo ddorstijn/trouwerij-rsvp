@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -9,6 +10,7 @@
     <link rel="stylesheet" href="https://unpkg.com/chota@latest">
     <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer></script>
 </head>
+
 <body>
     <nav class="nav">
         <div class="nav-left">
@@ -18,9 +20,46 @@
             <div class="tabs">
                 <a href="../index.html">Home</a>
                 <a href="../signup/index.html">Aanmelden</a>
+                <a href="../presents/index.html">Cadeaulijst</a>
                 <a href="./index.html" class="active">Bekijk aanmeldingen</a>
             </div>
         </div>
     </nav>
+    <main role="main" class="container" x-data="app()" x-init="init()">
+        <table class="striped">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Ceremony</th>
+                    <th>Dinner</th>
+                    <th>Party</th>
+                </tr>
+            </thead>
+            <tbody>
+                <template x-for="member in members" :key="member.id">
+                    <tr>
+                        <td x-text="member.name"></td>
+                        <td x-text="Boolean(member.ceremony)"></td>
+                        <td x-text="Boolean(member.dinner)"></td>
+                        <td x-text="Boolean(member.party)"></td>
+                    </tr>
+                </template>
+            </tbody>
+        </table>
+    </main>
+
+    <script>
+        function app() {
+            return {
+                members: [],
+                async init() {
+                    let res = await fetch("http://localhost:8080/members");
+                    const { data: members } = await res.json();
+                    this.members = members;
+                }
+            }
+        }
+    </script>
 </body>
+
 </html>

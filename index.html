@@ -8,6 +8,74 @@
     <!-- CSS & JS -->
     <link rel="stylesheet" href="https://unpkg.com/chota@latest">
     <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Lobster&display=swap');
+        body {
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            color: white;
+        }
+
+        nav {
+            position: fixed;
+            width: calc(100vw - 8rem);
+            padding: 1rem;
+            margin: 4rem;
+            
+            background: white;
+            border-radius: 4px;
+            box-shadow: 0 0 3px #ccc;
+        }
+
+        header {
+            width: 100vw; 
+            height:100vh; 
+
+            display: flex;
+        }
+
+        video{
+            position: absolute;
+            top: 50%; 
+            left: 50%;
+            transform: translateX(-50%) translateY(-50%);
+            min-width: 100%; 
+            min-height: 100%; 
+            width: auto; 
+            height: auto;
+            z-index: -1000; 
+            overflow: hidden;
+
+            filter: brightness(.75);
+            box-shadow: 0px 0px 100px 10px rgba(0,0,0,0.7) inset;
+        }
+
+        .hero__content {
+            align-self: center;
+            padding-left: 10vw;
+        }
+
+        .display {
+            font-size: 6rem;
+            font-family: 'Lobster', cursive;
+            margin: 0;
+        }
+
+        footer {
+            position: absolute;
+            bottom: 0;
+            width: 100vw;
+            padding: 4rem;
+            
+            display: flex;
+            justify-content: center;
+
+            font: 2rem 'Lobster', cursive;
+            font-size: 2rem;
+        }
+    </style>
 </head>
 <body>
     <nav class="nav">
@@ -15,21 +83,31 @@
             <a class="brand" href="#">D&T</a>
         </div>
         <div class="nav-right">
-            <div class="tabs">
-                <a href="./index.html" class="active">Home</a>
-                <a href="./signup/index.html">Aanmelden</a>
-                <a href="./view/index.html">Bekijk aanmeldingen</a>
-            </div>
+                <a href="./presents/index.html">Planning</a>
+                <a href="./presents/index.html">Cadeaulijst</a>
+                <a href="./presents/index.html">Carpool</a>
+                |
+                <a href="./signup/index.html">Inloggen</a>
+                <a class="button primary" href="./signup/index.html">Aanmelden</a>
         </div>
     </nav>
-    <main role="main" class="container">
-        <h1>Danny & Titisa gaan trouwen!</h1>
-        <div x-data="countdown()" x-init="init()">
-            <p>Nog maar <span x-text="diff"></span> dagen!</p>
-        </div>
-        <a href="signup/">Laat weten of je komt!</a>
-    </main>
+    <header class="hero">
+        <video playsinline autoplay muted loop poster="placeholder.jpg" id="bgvideo" width="x" height="y">
+            <source src="./Trouwerij.webm" type="video/webm">
+        </video>
 
+        <div class="hero__content">
+            <h1 class="display">Danny & Titisa gaan trouwen!</h1>
+            8 September 2021 - Van Houtenkerk, Weesp - 15:30
+            <div x-data="countdown()" x-init="init()">
+                <p>Nog maar <span x-text="diff"></span> dagen!</p>
+            </div>
+            <a class="button primary" href="signup/">Laat weten of je komt!</a>
+        </div>
+     </header>
+     <footer>
+        8 September 2021
+     </footer>
     <script>
         const _MS_PER_DAY = 1000 * 60 * 60 * 24;
         const _WEDDING_DATE = new Date("8 sep 2021");

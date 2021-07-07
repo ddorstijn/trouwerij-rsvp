@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trouwerij Danny & Titisa</title>
+    <!-- CSS & JS -->
+    <link rel="stylesheet" href="https://unpkg.com/chota@latest">
+    <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer></script>
+</head>
+<body>
+    <nav class="nav">
+        <div class="nav-left">
+            <a class="brand" href="#">D&T</a>
+        </div>
+        <div class="nav-right">
+            <div class="tabs">
+                <a href="../index.html">Home</a>
+                <a href="../signup/index.html">Aanmelden</a>
+                <a href="./index.html" class="active">Cadeaulijst</a>
+                <a href="../view/index.html">Bekijk aanmeldingen</a>
+            </div>
+        </div>
+    </nav>
+    <main role="main" class="container" x-data="app()" x-init="init()">
+        <ul>
+            <template x-for="p in presents" :key="presents.id">
+                <li x-text="p.name"></li>
+            </template>
+        </ul>
+    </main>
+
+    <script>
+        function app() {
+            return {
+                presents: [],
+                async init() {
+                    let res = await fetch("http://localhost:8080/presents");
+                    const { data: presents } = await res.json();
+                    this.presents = presents;
+                }
+            }
+        }
+    </script>
+</body>
+</html>

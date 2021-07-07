@@ -7,168 +7,227 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Trouwerij Danny & Titisa - Signup</title>
     <!-- CSS & JS -->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Ruthie&display=swap" rel="stylesheet">
+
     <link rel="stylesheet" href="https://unpkg.com/chota@latest">
+    <link rel="stylesheet" href="../global.css">
+
     <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer></script>
 
     <style>
-        details {
-            border: 1px solid #aaa;
+        body {
+            display: grid;
+            grid-template: 
+                "nav nav" min-content
+                "main aside" 1fr
+                "footer footer" 4rem / 1fr 1fr;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        body > nav {
+            grid-area: nav;
+            width: calc(100vw - 8rem);
+            padding: 1rem;
+            margin: 4rem;
+
+            background: white;
             border-radius: 4px;
-            padding: .5em .5em 0;
+            box-shadow: 0 0 3px #ccc;
         }
 
-        summary {
+        body > main {
+            grid-area: main;
+
+            justify-self: center;
+        }
+
+        body > aside {
+            grid-area: aside;
+        }
+
+        body > footer {
+            grid-area: footer;
+        }
+
+        main footer {
+            margin-top: 2rem;
+            width: 100%;
+
+            display: flex;
+            justify-content: stretch;
+        }
+
+        .pagination {
+            display: block;
+            text-transform: uppercase;
+            font-size: small;
             font-weight: bold;
-            margin: -.5em -.5em 0;
-            padding: .5em;
-        }
+        }   
 
-        details[open] {
-            padding: .5em;
-        }
+        #image {
+            background: url('./Titisa\ pirouette.jpg') no-repeat;
+            background-size: contain;
+            background-position-x: center;
 
-        details[open] summary {
-            border-bottom: 1px solid #aaa;
-            margin-bottom: .5em;
-        }
-
-        details[open] summary~* {
-            animation: sweep .5s ease-in-out;
-        }
-
-        @keyframes sweep {
-            0% {
-                opacity: 0;
-                margin-left: -10px
-            }
-
-            100% {
-                opacity: 1;
-                margin-left: 0px
-            }
+            height: 100%;
+            width: 100%;
         }
     </style>
 </head>
 
-<body>
+<body class="is-full-screen">
     <nav class="nav">
         <div class="nav-left">
             <a class="brand" href="#">D&T</a>
         </div>
         <div class="nav-right">
-            <div class="tabs">
-                <a href="../index.html">Home</a>
-                <a href="./index.html" class="active">Aanmelden</a>
-                <a href="../view/index.html">Bekijk aanmeldingen</a>
-            </div>
+            <a href="./presents/index.html">Planning</a>
+            <a href="./presents/index.html">Cadeaulijst</a>
+            <a href="./presents/index.html">Carpool</a>
+            |
+            <a href="./signup/index.html">Inloggen</a>
+            <a class="button primary" href="./signup/index.html">Aanmelden</a>
         </div>
     </nav>
-    <main role="main" class="container">
-        <h1>Aanmelden</h1>
-        <div class="card" x-data="signup()" x-init="init()">
-            <header>Stap <span x-text="state + 1"></span> van <span x-text="states.COUNT"></span></header>
-            
-            <div x-show.transition="state == states.SELECT">
-                <form x-on:submit="submitFamily">
-                    <label for="family-name">Selecteer jouw familie:</label>
-                    <input list="family-names" id="family-name" name="family-name" />
-                    <datalist id="family-names">
-                        <template x-for="f in families" :key="f.id">
-                            <option :value="f.name">
-                        </template>
-                    </datalist>
-                    <button type="submit">Meld je aan</button>
-                </form>
-            </div>
 
-            <div x-show.transition="state == states.SIGNUP">
-                <h1 x-text="active?.name"></h1>
-                <template x-for="(m, index) in active?.members ?? 0" :key="m.id">
-                    <details :open="activeMember == index">
-                        <summary x-text="m.name"></summary>
-                        <form x-on:submit.prevent="submitMember($event, m)">
-                            <ul>
-                                <label>
+    <main role="main">
+        <header class="page-header">
+            <h1>Aanmelden</h1>
+            <img src="../assets/divider.svg" >
+        </header>
+        <div class="is-full-width" x-data="signup()" x-init="init()">
+            <header x-show="state < states.length">
+                <span class="pagination [ text-grey ]">
+                    Stap
+                    <span x-text="state + 1"></span>
+                    van
+                    <span x-text="states.length"></span>
+                </span>
+                <b class="text-primary" x-text="states[state]"></b>
+            </header>
+
+            <template x-if="state == 0">
+                <form id="step-one" class="step" autocomplete="off" @submit.prevent="submitFamily">
+                    <small>Typ hier beneden je achternaam in. Kies vervolgens uit de lijst de juiste familie</small>
+                    <input list="family-names" placeholder="Begin hier met typen.." x-model="picker" />
+                    <template x-if="picker.length > 1">
+                        <datalist id="family-names" x-ref="names">
+                            <template x-for="f in families" :key="f.id">
+                                <option :value="f.name">
+                            </template>
+                        </datalist>
+                    </template>
+
+                    <footer>
+                        <button class="button primary outline is-full-width" type="submit" form="step-one">Meld je aan</button>
+                    </footer>
+                </form>
+            </template>
+
+            <template x-if="state == 1">
+                <div class="step">
+                    <h3 class="is-marginless" x-text="active.name"></h3>
+
+                    <template x-for="(m, index) in active.members" :key="m.id">
+                        <details :open="activeMember == index">
+                            <summary x-text="m.name" @click.prevent="activeMember = index"></summary>
+                            <form @submit.prevent="submitMember(m)">
+                                <label class="is-vertical-align">
                                     <input type="checkbox" id="attends-ceremony" name="ceremony"
-                                        :checked="Boolean(m.ceremony)" />
+                                        :checked="Boolean(m.ceremony)" @change="m.ceremony = $event.target.checked" />
                                     Aanwezig bij de ceremonie
                                 </label>
 
-                                <label>
+                                <label class="is-vertical-align">
                                     <input type="checkbox" id="attends-dinner" name="dinner"
-                                        :checked="Boolean(m.dinner)" />
+                                        :checked="Boolean(m.dinner)" @change="m.dinner = $event.target.checked" />
                                     Aanwezig bij het dinner
                                 </label>
 
-                                <label>
-                                    <input type="checkbox" id="attends-party" name="party"
-                                        :checked="Boolean(m.party)" />
+                                <label class="is-vertical-align">
+                                    <input type="checkbox" id="attends-party" name="party" :checked="Boolean(m.party)"
+                                        @change="m.party = $event.target.checked" />
                                     Aanwezig bij het feest
                                 </label>
-                            </ul>
-                            <button type="submit">Opslaan</button>
-                        </form>
-                    </details>
-                </template>
-                <div class="float-right">
-                    <button class="button outline" @click="state--">Terug</button>
-                    <button @click="state++">Aanmelden afronden</button>
+
+                                <footer>
+                                    <button type="submit" @click="activeMember++">
+                                        Opslaan
+                                    </button>
+                                </footer>
+                            </form>
+                        </details>
+                    </template>
+
+                    <footer class="is-right">
+                        <button class="button clear" @click="state--">terug</button>
+                        <button class="button primary" @click="submitAllAndFinish">
+                            Afronden
+                        </button>
+                    </footer>
                 </div>
-            </div>
-            <div x-show.transition="state == states.FINISH">
-                Dank je wel voor je aanmelding!
-            </div>
+            </template>
+
+            <!-- Completion -->
+            <template x-if="state == states.length">
+                <div class="is-center">
+                    <h2>Dank je wel voor je aanmelding!</h2>
+                </div>
+            </template>
         </div>
     </main>
+    <aside>
+        <div id="image"></div>
+    </aside>
+    </div>
 
     <script>
         function signup() {
             return {
-                states: {
-                    SELECT: 0,
-                    SIGNUP: 1,
-                    FINISH: 2,
-                    COUNT: 3,
-                },
+                states: ['Selecteer familie', 'Aanmeld activiteiten'],
                 state: 0,
                 families: [],
+                picker: "",
                 active: null,
                 activeMember: 0,
-                init() {
-                    fetch("http://localhost:8080/families")
-                        .then(res => res.json())
-                        .then(({ data }) => this.families = data);
+                async init() {
+                    const response = await fetch("http://localhost:8080/families");
+                    const { data } = await response.json();
+                    this.families = data;
                 },
-                fetchMembers(family) {
-                    fetch(`http://localhost:8080/families/${family}`)
-                        .then(res => res.json())
-                        .then(({ data }) => {
-                            this.active = data.family;
-                            this.active.members = data.members;
-                        });
+                async fetchMembers(family) {
+                    const response = await fetch(`http://localhost:8080/families/${family}`);
+                    const { data } = await response.json();
+
+                    this.active = data.family;
+                    this.active.members = data.members;
                 },
-                submitFamily(e) {
-                    e.preventDefault();
-                    const id = this.families.find(f => f.name == e.target.querySelector('#family-name').value)?.id;
+                async submitFamily(e) {
+                    const { id } = this.families.find(f => f.name == this.picker) ?? {};
                     if (!id) {
                         alert("Selecteer een familie uit de lijst");
                         return;
                     }
 
-                    this.fetchMembers(id);
-                    this.$nextTick(() => this.state = this.states.SIGNUP);
+                    await this.fetchMembers(id);
+                    this.state++;
                 },
-                submitMember(e, member) {
-                    const inputs = Array.from(e.target.querySelectorAll("input"));
-                    const data = inputs.reduce((obj, item) => (obj[item.name] = item.checked, obj), {});
-                    this.activeMember++;
-
-                    fetch(`http://localhost:8080/members/${member.id}`, {
+                async submitMember({ id, ceremony, dinner, party }) {
+                    await fetch(`http://localhost:8080/members/${id}`, {
                         method: 'PUT',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(data)
+                        body: JSON.stringify({ ceremony, dinner, party })
                     });
-                }
+                },
+                async submitAllAndFinish() {
+                    for (const member of this.active.members) {
+                        await this.submitMember(member);
+                    }
+
+                    this.state++;
+                },
             }
         }
     </script>
